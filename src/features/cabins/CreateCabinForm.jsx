@@ -11,7 +11,8 @@ import FormRow from "../../ui/FormRow";
 import { createCabin } from "../../services/apiCabins";
 
 function CreateCabinForm() {
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { register, handleSubmit, reset, getValues, formState, watch } = useForm();
+  const regularPrice = watch("regularPrice");
   const { errors } = formState;
 
   const queryClient = useQueryClient();
@@ -69,10 +70,6 @@ function CreateCabinForm() {
           disabled={isCreating}
           {...register("regularPrice", {
             required: "This field is required",
-            min: {
-              value: 1,
-              message: "Capacity should be atleast 1",
-            },
           })}
         />
       </FormRow>
@@ -86,7 +83,7 @@ function CreateCabinForm() {
           {...register("discountPrice", {
             required: "This field is required",
             validate: (value) =>
-              value < getValues().regularPrice ||
+              Number(value) <= Number(regularPrice) ||
               "Discount should be less than the regular price",
           })}
         />
